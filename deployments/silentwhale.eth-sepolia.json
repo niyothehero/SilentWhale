@@ -1,11 +1,11 @@
 {
   "contract": "SilentWhale",
-  "address": "0xa80e06477395a0f136d22d2ed23947002a00E901",
+  "address": "0xa859F4010d52C4baaa9749e445b3dC520b92F679",
   "network": "eth-sepolia",
   "chainId": 11155111,
   "deployer": "0xB3A78E23993cc416DF79c8E954e427Ef15063b20",
-  "deployTx": "0x1790a68930c3850c4fe20e3f9806c81dafb69c3015069ade9d9bc2c05c654565",
-  "deployedBlock": 10965724,
+  "deployTx": "0xd203fefaeca514cf2618e9a458bfd78cc32a27babe670aac3dde989a75103e43",
+  "deployedBlock": 10965789,
   "paymentToken": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
   "features": [
     "encrypted-signals",
@@ -16,5 +16,5 @@
     "signal-lifecycle",
     "alert-receipts"
   ],
-  "deployedAt": "2026-06-01T04:51:09.369Z"
+  "deployedAt": "2026-06-01T05:04:58.160Z"
 }

@@ -11,11 +11,10 @@ Think of it as a private intelligence layer for whale tracking: public enough to
 - App: `https://silent-whale-lake.vercel.app`
 - Vercel production alias: `https://silent-whale-lake.vercel.app`
 - Network: Ethereum Sepolia
-- Contract: `0xa80e06477395a0f136d22d2ed23947002a00E901`
+- Contract: `0xa859F4010d52C4baaa9749e445b3dC520b92F679`
 - Deployment metadata: `deployments/silentwhale.eth-sepolia.json`
-- Deploy tx: `0x1790a68930c3850c4fe20e3f9806c81dafb69c3015069ade9d9bc2c05c654565`
-- Clean seed signal tx: `0x4df9246c7fd7e870bbae7312dffe465f40ad0828bb4c166774899337c93f2a56`
-- Clean state note: this deployment starts fresh with no seeded alert receipts or old subscription/watchlist history.
+- Deploy tx: `0xd203fefaeca514cf2618e9a458bfd78cc32a27babe670aac3dde989a75103e43`
+
 - Brand assets: `public/silentwhale-mark.svg` for UI chrome and `public/icon.svg` for the favicon.
 
 ## What The App Does
@@ -99,7 +98,7 @@ Required local env:
 ```bash
 NEXT_PUBLIC_CHAIN_ID=11155111
 NEXT_PUBLIC_SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
-NEXT_PUBLIC_SILENT_WHALE_ADDRESS=0xa80e06477395a0f136d22d2ed23947002a00E901
+NEXT_PUBLIC_SILENT_WHALE_ADDRESS=0xa859F4010d52C4baaa9749e445b3dC520b92F679
 NEXT_PUBLIC_USDC_ADDRESS=0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
 ```
 
@@ -147,7 +146,7 @@ Last verified on June 1, 2026:
 - `npm run test:contracts` passed with 9 tests.
 - `npm run security:check` passed with deployed bytecode at 24,494 bytes.
 - `npm run qa:wallet` passed against Sepolia chain `11155111`.
-- `npm run indexer` indexed 1 clean protocol signal on the fresh deployment.
+- `npm run indexer` indexed 0 protocol signals on the fresh empty deployment.
 - `npm run build` passed. The build still reports webpack circular chunk warnings, but deployment succeeds.
 - Vercel production route smoke checks returned `200` for `/`, `/dashboard`, `/admin`, `/alerts`, `/analyst`, `/analysts`, `/dao`, `/subscription`, `/watchlist`, and `/signals/1`.
 

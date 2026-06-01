@@ -1,18 +1,5 @@
 {
-  "indexedAt": "2026-06-01T04:53:20.742Z",
+  "indexedAt": "2026-06-01T05:05:38.288Z",
   "transferEvents": [],
-  "signalEvents": [
-    {
-      "source": "event-log",
-      "blockNumber": 10965730,
-      "txHash": "0x4df9246c7fd7e870bbae7312dffe465f40ad0828bb4c166774899337c93f2a56",
-      "signalId": 0,
-      "analyst": "0xB3A78E23993cc416DF79c8E954e427Ef15063b20",
-      "feedId": 0,
-      "tokenSymbol": "AI",
-      "sector": "Artificial Intelligence",
-      "minTier": 1,
-      "eventRef": "signal:0x4df9246c7fd7e870bbae7312dffe465f40ad0828bb4c166774899337c93f2a56:902"
-    }
-  ]
+  "signalEvents": []
 }
