@@ -1,42 +1,18 @@
 {
-  "indexedAt": "2026-05-31T20:10:04.489Z",
+  "indexedAt": "2026-06-01T04:53:20.742Z",
   "transferEvents": [],
   "signalEvents": [
     {
       "source": "event-log",
-      "blockNumber": 10962812,
-      "txHash": "0x1812b8b2395e198b3041648d8632d26307798f1df0de98333702873b5f5d5de8",
+      "blockNumber": 10965730,
+      "txHash": "0x4df9246c7fd7e870bbae7312dffe465f40ad0828bb4c166774899337c93f2a56",
       "signalId": 0,
       "analyst": "0xB3A78E23993cc416DF79c8E954e427Ef15063b20",
       "feedId": 0,
       "tokenSymbol": "AI",
       "sector": "Artificial Intelligence",
       "minTier": 1,
-      "eventRef": "signal:0x1812b8b2395e198b3041648d8632d26307798f1df0de98333702873b5f5d5de8:586"
-    },
-    {
-      "source": "event-log",
-      "blockNumber": 10962827,
-      "txHash": "0xfff52a44c86c365400243146c0536a9f1e14203af224f10a202c3e3106de2827",
-      "signalId": 1,
-      "analyst": "0xB3A78E23993cc416DF79c8E954e427Ef15063b20",
-      "feedId": 0,
-      "tokenSymbol": "FHE",
-      "sector": "Privacy Infrastructure",
-      "minTier": 1,
-      "eventRef": "signal:0xfff52a44c86c365400243146c0536a9f1e14203af224f10a202c3e3106de2827:621"
-    },
-    {
-      "source": "event-log",
-      "blockNumber": 10962855,
-      "txHash": "0x36fafe8cdb43a8ae2b3adbc205fc7cb8f870987674553190ed628befb3a854ff",
-      "signalId": 2,
-      "analyst": "0xB3A78E23993cc416DF79c8E954e427Ef15063b20",
-      "feedId": 0,
-      "tokenSymbol": "FHE",
-      "sector": "Privacy Infrastructure",
-      "minTier": 1,
-      "eventRef": "signal:0x36fafe8cdb43a8ae2b3adbc205fc7cb8f870987674553190ed628befb3a854ff:588"
+      "eventRef": "signal:0x4df9246c7fd7e870bbae7312dffe465f40ad0828bb4c166774899337c93f2a56:902"
     }
   ]
 }

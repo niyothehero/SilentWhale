@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Radio, ShieldCheck, Wallet } from "lucide-react";
+import { Bell, Radio, ShieldCheck, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ACTIVE_CHAIN, formatAddress } from "@/lib/silent-whale";
 import { useSilentWhale } from "@/hooks/use-silent-whale";
@@ -12,7 +12,6 @@ const links = [
   { href: "/analysts", label: "Analysts" },
   { href: "/analyst", label: "Publish" },
   { href: "/watchlist", label: "Watchlist" },
-  { href: "/alerts", label: "Alerts" },
   { href: "/dao", label: "DAO" },
   { href: "/subscription", label: "Access" },
   { href: "/admin", label: "Admin" },
@@ -60,6 +59,17 @@ export function AppNav() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-3">
+          <Link
+            href="/alerts"
+            aria-label="Notifications"
+            className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors ${
+              pathname.startsWith("/alerts")
+                ? "border-white bg-white text-black"
+                : "border-white/15 text-white/60 hover:border-white/35 hover:text-white"
+            }`}
+          >
+            <Bell className="h-4 w-4" />
+          </Link>
           <span className="hidden items-center gap-2 text-xs text-white/45 lg:flex">
             {configured ? (
               <ShieldCheck className="h-4 w-4 text-[#67e8f9]" />

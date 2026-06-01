@@ -153,7 +153,7 @@ export const tierCopy = [
     name: "Elite",
     price: "0.003 ETH",
     summary: "Full whale analytics and private watchlists.",
-    features: ["Elite feeds", "Encrypted watchlists", "Alert history"],
+    features: ["Elite feeds", "Encrypted watchlists", "Alert receipts"],
   },
   {
     name: "DAO",

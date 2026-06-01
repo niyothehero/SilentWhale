@@ -73,8 +73,8 @@ export default function AlertsPage() {
 
   return (
     <PageFrame
-      eyebrow="Alerts"
-      title="Alert history"
+      eyebrow="Notifications"
+      title="Notifications"
       copy="Review alert receipts without exposing the private rule that triggered them."
     >
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
