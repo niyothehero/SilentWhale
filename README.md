@@ -18,6 +18,7 @@ Think of it as a private intelligence layer for whale tracking: public enough to
 - Latest live QA signal tx: `0x36fafe8cdb43a8ae2b3adbc205fc7cb8f870987674553190ed628befb3a854ff`
 - Latest live QA access grant tx: `0xc01adcf50b68e9ab54fe9afd078344ebc494f41552c3020025aa418317188bc0`
 - Live QA result: `LIVE_QA_OK`
+- Brand assets: `public/silentwhale-mark.svg` for UI chrome and `public/icon.svg` for the favicon.
 
 ## What The App Does
 

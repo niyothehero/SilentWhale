@@ -44,7 +44,13 @@ export function Navigation() {
           }`}
         >
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2 group">
+          <a href="/" className="flex items-center gap-3 group">
+            <img
+              src="/silentwhale-mark.svg"
+              alt=""
+              aria-hidden="true"
+              className={`transition-all duration-500 ${isScrolled ? "h-8 w-8" : "h-9 w-9"}`}
+            />
             <span className={`font-display tracking-tight transition-all duration-500 ${isScrolled ? "text-xl text-foreground" : "text-2xl text-white"}`}>SilentWhale</span>
             <span className={`font-mono transition-all duration-500 ${isScrolled ? "text-[10px] mt-0.5 text-muted-foreground" : "text-xs mt-1 text-white/60"}`}>TM</span>
           </a>

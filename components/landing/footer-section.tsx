@@ -111,6 +111,12 @@ export function FooterSection() {
             {/* Brand Column */}
             <div className="col-span-2">
               <a href="/" className="inline-flex items-center gap-2 mb-6">
+                <img
+                  src="/silentwhale-mark.svg"
+                  alt=""
+                  aria-hidden="true"
+                  className="h-9 w-9"
+                />
                 <span className="text-2xl font-display text-white">SilentWhale</span>
                 <span className="text-xs text-white/40 font-mono">TM</span>
               </a>

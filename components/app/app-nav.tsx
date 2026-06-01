@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LockKeyhole, Radio, ShieldCheck, Wallet } from "lucide-react";
+import { Radio, ShieldCheck, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ACTIVE_CHAIN, formatAddress } from "@/lib/silent-whale";
 import { useSilentWhale } from "@/hooks/use-silent-whale";
@@ -27,9 +27,12 @@ export function AppNav() {
     <header className="sticky top-0 z-40 border-b border-white/10 bg-background/92 backdrop-blur-xl">
       <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-x-4 gap-y-3 px-5 py-3 sm:px-6 lg:px-10">
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center bg-white text-black">
-            <LockKeyhole className="h-4 w-4" />
-          </span>
+          <img
+            src="/silentwhale-mark.svg"
+            alt=""
+            aria-hidden="true"
+            className="h-8 w-8"
+          />
           <span className="font-display text-xl tracking-tight">
             SilentWhale
           </span>

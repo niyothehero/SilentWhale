@@ -24,6 +24,9 @@ export const metadata: Metadata = {
   title: 'SilentWhale - Private Whale Intelligence',
   description: 'On-chain encrypted whale signals, subscriptions, and private watchlists powered by Fhenix CoFHE.',
   generator: 'SilentWhale',
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
 }
 
 export default function RootLayout({
