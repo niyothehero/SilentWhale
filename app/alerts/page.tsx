@@ -74,8 +74,8 @@ export default function AlertsPage() {
   return (
     <PageFrame
       eyebrow="Alerts"
-      title="Private trigger history."
-      copy="The indexer records alert receipts with hashed private rules, so delivery can be audited without exposing watchlist strategy."
+      title="Alert history"
+      copy="Review alert receipts without exposing the private rule that triggered them."
     >
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3 text-sm text-white/50">

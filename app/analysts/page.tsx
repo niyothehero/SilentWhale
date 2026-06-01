@@ -169,9 +169,9 @@ export default function AnalystsPage() {
 
   return (
     <PageFrame
-      eyebrow="Marketplace"
-      title="Analyst desks."
-      copy="Browse public analyst profiles, feed coverage, signal counts, and encrypted reputation scores unlocked through CoFHE permits."
+      eyebrow="Analysts"
+      title="Marketplace"
+      copy="Browse publisher profiles, coverage, signal counts, and encrypted reputation."
     >
       {!configured ? (
         <EmptyState title="Contract is not configured." copy="Deploy the Wave 5 contract to enable the analyst marketplace." />

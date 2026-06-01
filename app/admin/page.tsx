@@ -397,9 +397,9 @@ export default function AdminPage() {
 
   return (
     <PageFrame
-      eyebrow="Protocol Admin"
-      title="Operate the protocol."
-      copy="Owner-only controls for feeds, analysts, subscriptions, payments, treasury, alerts, and anti-spam settings."
+      eyebrow="Admin"
+      title="Protocol controls"
+      copy="Manage feeds, analysts, pricing, grants, treasury, alerts, and cooldowns."
     >
       <div className="mb-10 grid gap-4 border-y border-white/10 py-5 text-sm text-white/55 md:grid-cols-5">
         <span>Owner: {formatAddress(stats.owner)}</span>

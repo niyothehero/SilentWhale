@@ -178,9 +178,9 @@ export default function DaoPage() {
 
   return (
     <PageFrame
-      eyebrow="DAO Access"
-      title="Shared decrypt desks."
-      copy="DAO-tier subscribers can create a team and grant seats that inherit shared encrypted signal access while the owner subscription remains active."
+      eyebrow="DAO"
+      title="Team access"
+      copy="Create a DAO workspace and manage seats for shared decrypt access."
     >
       <div className="grid gap-12 lg:grid-cols-12">
         <form onSubmit={createTeam} className="space-y-6 lg:col-span-5">

@@ -162,9 +162,9 @@ export default function SubscriptionPage() {
 
   return (
     <PageFrame
-      eyebrow="Access Market"
-      title="Subscribe on-chain."
-      copy="Native ETH subscriptions determine which encrypted handles your wallet can unlock."
+      eyebrow="Access"
+      title="Subscription"
+      copy="Choose the tier your wallet uses to unlock encrypted signals."
     >
       <div className="mb-10 flex flex-wrap items-center justify-between gap-4 border-y border-white/10 py-5">
         <div>

@@ -173,9 +173,9 @@ export default function SignalDetailPage() {
 
   return (
     <PageFrame
-      eyebrow="Signal Detail"
-      title={signal ? `Signal #${signal.id}.` : "Loading signal."}
-      copy="Inspect indexed metadata, unlock encrypted fields, and manage lifecycle state from publish to archive."
+      eyebrow="Signal"
+      title={signal ? `Signal #${signal.id}` : "Loading signal"}
+      copy="Review metadata, unlock encrypted fields, and manage lifecycle state."
     >
       {!configured ? (
         <EmptyState title="Contract is not configured." copy="Set the deployed SilentWhale address before opening signal details." />

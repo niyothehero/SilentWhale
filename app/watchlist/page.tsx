@@ -136,9 +136,9 @@ export default function WatchlistPage() {
 
   return (
     <PageFrame
-      eyebrow="Private Watchlists"
-      title="Track without leaking."
-      copy="Watched wallets and thresholds are stored as encrypted handles on-chain."
+      eyebrow="Private data"
+      title="Watchlist"
+      copy="Store watched wallets and confidence thresholds as encrypted on-chain handles."
     >
       <div className="grid gap-12 lg:grid-cols-12">
         <form onSubmit={submit} className="space-y-7 lg:col-span-5">

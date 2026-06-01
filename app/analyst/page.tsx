@@ -176,9 +176,9 @@ export default function AnalystPage() {
 
   return (
     <PageFrame
-      eyebrow="Analyst Console"
-      title="Publish encrypted alpha."
-      copy="Signal metadata is visible. Wallet, size, confidence, entry, and risk are encrypted client-side before the transaction."
+      eyebrow="Analyst"
+      title="Publish signal"
+      copy="Public context stays readable; sensitive fields are encrypted before the transaction."
     >
       <form onSubmit={submit} className="grid gap-10 lg:grid-cols-12">
         <div className="space-y-8 lg:col-span-7">
