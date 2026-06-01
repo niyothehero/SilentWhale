@@ -19,8 +19,8 @@ import {
 
 export default function WatchlistPage() {
   const { address, connect, getWriteContract, configured } = useSilentWhale();
-  const [wallet, setWallet] = useState("0x000000000000000000000000000000000000bEEF");
-  const [note, setNote] = useState("AI sector smart-money alerts");
+  const [wallet, setWallet] = useState("");
+  const [note, setNote] = useState("");
   const [threshold, setThreshold] = useState("85");
   const [items, setItems] = useState<WatchlistRecord[]>([]);
   const [revealed, setRevealed] = useState<Record<number, { wallet: string; threshold: string }>>({});
@@ -151,6 +151,7 @@ export default function WatchlistPage() {
             <input
               value={wallet}
               onChange={(event) => setWallet(event.target.value)}
+              placeholder="0x..."
               className="w-full border-b border-white/20 bg-transparent py-3 font-mono text-sm outline-none focus:border-white"
               required
             />
@@ -160,6 +161,7 @@ export default function WatchlistPage() {
             <input
               value={note}
               onChange={(event) => setNote(event.target.value)}
+              placeholder="Smart-money alert"
               className="w-full border-b border-white/20 bg-transparent py-3 outline-none focus:border-white"
               required
             />
@@ -213,7 +215,7 @@ export default function WatchlistPage() {
                         {item.labelHash}
                       </p>
                     </div>
-                    <div className="border-l border-white/10 pl-6">
+                    <div className="border-t border-white/10 pt-5 md:border-l md:border-t-0 md:pl-6 md:pt-0">
                       {unlocked ? (
                         <div className="space-y-3 text-sm">
                           <p className="flex justify-between gap-4 border-b border-white/10 pb-3">
