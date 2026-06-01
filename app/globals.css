@@ -87,9 +87,11 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: clip;
   }
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
 }
 
