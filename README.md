@@ -152,7 +152,7 @@ Last verified on June 1, 2026:
 - `npm run build` passed. The build still reports webpack circular chunk warnings, but deployment succeeds.
 - Vercel production route smoke checks returned `200` for `/`, `/dashboard`, `/admin`, `/alerts`, `/analyst`, `/analysts`, `/dao`, `/subscription`, `/watchlist`, and `/signals/1`.
 
-## Wave 5 - Completed Production Build
+## Wave 5 - Completed   Build
 
 Wave 5 turns SilentWhale into a complete testnet protocol surface while staying aligned with current CoFHE support on Sepolia, Arbitrum Sepolia, and Base Sepolia.
 
