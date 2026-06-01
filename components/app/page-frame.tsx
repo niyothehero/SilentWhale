@@ -15,19 +15,19 @@ export function PageFrame({
   return (
     <main className="min-h-screen bg-background text-foreground">
       <AppNav />
-      <section className="mx-auto max-w-[1400px] px-6 py-10 lg:px-12 lg:py-14">
-        <div className="mb-8 grid gap-5 border-b border-white/10 pb-8 lg:grid-cols-12">
-          <div className="lg:col-span-8">
-            <span className="mb-4 inline-flex items-center gap-3 font-mono text-xs uppercase text-white/45">
-              <span className="h-px w-10 bg-white/25" />
+      <section className="mx-auto max-w-[1280px] px-5 py-7 sm:px-6 lg:px-10 lg:py-9">
+        <div className="mb-7 flex flex-col gap-4 border-b border-white/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl">
+            <span className="mb-3 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">
+              <span className="h-px w-7 bg-white/20" />
               {eyebrow}
             </span>
-            <h1 className="font-display text-5xl leading-[0.95] tracking-tight md:text-6xl lg:text-7xl">
+            <h1 className="font-display text-4xl leading-none tracking-tight md:text-5xl">
               {title}
             </h1>
           </div>
           {copy ? (
-            <p className="self-end text-base leading-relaxed text-white/55 lg:col-span-4">
+            <p className="max-w-md text-sm leading-6 text-white/55">
               {copy}
             </p>
           ) : null}

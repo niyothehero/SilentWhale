@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Eye, RefreshCw, Search, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, Eye, RefreshCw, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/app/empty-state";
 import { PageFrame } from "@/components/app/page-frame";
@@ -36,7 +36,7 @@ type RevealedSignal = {
 };
 
 const filterControlClass =
-  "h-11 w-full border border-white/10 bg-background px-3 text-sm text-white outline-none transition-colors focus:border-white/40";
+  "h-10 w-full border-0 border-b border-white/15 bg-transparent px-0 text-sm text-white outline-none transition-colors focus:border-white/45";
 
 export default function DashboardPage() {
   const { address, connect, getWriteContract, configured } = useSilentWhale();
@@ -80,6 +80,17 @@ export default function DashboardPage() {
   const tokenOptions = uniqueSignalValues(signals, "tokenSymbol");
   const sectorOptions = uniqueSignalValues(signals, "sector");
   const movementOptions = uniqueSignalValues(signals, "movementType");
+  const liveCount = signals.filter((signal) => signal.active).length;
+  const gatedCount = signals.filter((signal) => signal.minTier > 0).length;
+  const latestSignal = signals[0];
+  const hasFilters = Boolean(
+    filters.query ||
+    filters.token ||
+    filters.sector ||
+    filters.movement ||
+    filters.minTier ||
+    !filters.activeOnly
+  );
 
   useEffect(() => {
     setPage(1);
@@ -125,20 +136,37 @@ export default function DashboardPage() {
 
   return (
     <PageFrame
-      eyebrow="Live Intelligence"
-      title="Signal dashboard."
-      copy="Browse live signals, unlock private fields with your wallet, and open details when you need the full context."
+      eyebrow="On-chain signal desk"
+      title="Whale signals"
+      copy="Search the public feed, then unlock eligible encrypted fields with your wallet."
     >
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="text-sm text-white/45">
-          {configured
-            ? `${filteredSignals.length} of ${signals.length} signals on ${ACTIVE_CHAIN.shortName}`
-            : "No deployed contract configured"}
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-6">
+        <div className="grid w-full gap-5 sm:grid-cols-3 lg:w-auto lg:min-w-[560px]">
+          {[
+            ["Signals", configured ? String(signals.length) : "-"],
+            ["Live", configured ? String(liveCount) : "-"],
+            ["Gated", configured ? String(gatedCount) : "-"],
+          ].map(([label, value]) => (
+            <div key={label} className="border-l border-white/12 pl-4">
+              <div className="font-display text-4xl leading-none">{value}</div>
+              <div className="mt-2 text-xs uppercase tracking-[0.18em] text-white/35">
+                {label}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-3 text-sm text-white/45">
+          <span>
+            {configured
+              ? `${filteredSignals.length} shown on ${ACTIVE_CHAIN.shortName}`
+              : "Contract not configured"}
+          </span>
+          {latestSignal ? <span>Latest {formatDate(latestSignal.createdAt)}</span> : null}
         </div>
         <Button
           onClick={loadSignals}
           variant="outline"
-          className="rounded-full border-white/20 bg-transparent"
+          className="h-10 rounded-full border-white/20 bg-transparent px-4"
           disabled={loading || !configured}
         >
           <RefreshCw className="mr-2 h-4 w-4" />
@@ -147,8 +175,8 @@ export default function DashboardPage() {
       </div>
 
       {signals.length > 0 ? (
-        <div className="mb-6 grid gap-3 border-y border-white/10 py-4 md:grid-cols-2 xl:grid-cols-[minmax(240px,1.5fr)_repeat(4,minmax(120px,1fr))_auto]">
-          <label className="flex h-11 items-center gap-3 border border-white/10 px-3">
+        <div className="mb-8 grid gap-x-6 gap-y-4 border-b border-white/10 pb-6 md:grid-cols-2 xl:grid-cols-[minmax(260px,1.4fr)_repeat(4,minmax(120px,1fr))_auto_auto]">
+          <label className="flex h-10 items-center gap-3 border-b border-white/15">
             <Search className="h-4 w-4 text-white/35" />
             <input
               value={filters.query}
@@ -210,7 +238,7 @@ export default function DashboardPage() {
               ))}
             </select>
           </label>
-          <label className="flex h-11 items-center justify-between gap-3 border border-white/10 px-3 text-sm text-white/55">
+          <label className="flex h-10 items-center justify-between gap-3 border-b border-white/15 text-sm text-white/55">
             Live only
             <input
               type="checkbox"
@@ -224,20 +252,28 @@ export default function DashboardPage() {
               className="h-4 w-4 accent-white"
             />
           </label>
+          <button
+            type="button"
+            onClick={() => setFilters(defaultSignalFilters)}
+            disabled={!hasFilters}
+            className="h-10 text-left text-sm text-white/45 transition-colors hover:text-white disabled:pointer-events-none disabled:opacity-30 xl:text-right"
+          >
+            Reset
+          </button>
         </div>
       ) : null}
 
       {!configured ? (
         <EmptyState
-          title="Contract address is pending."
-          copy="Deploy SilentWhale and set NEXT_PUBLIC_SILENT_WHALE_ADDRESS to turn this into a live encrypted feed."
+          title="Contract not configured."
+          copy="Set the deployed SilentWhale address before loading live signals."
           href="/admin"
           action="Open admin"
         />
       ) : signals.length === 0 ? (
         <EmptyState
-          title="No signal has been published yet."
-          copy="The analyst console can publish the first encrypted whale signal once your wallet is connected."
+          title="No signals yet."
+          copy="Publish an encrypted signal from the analyst console."
           href="/analyst"
           action="Publish a signal"
         />
@@ -248,43 +284,53 @@ export default function DashboardPage() {
             return (
               <article
                 key={signal.id}
-                className="grid gap-6 py-6 lg:grid-cols-[minmax(0,1fr)_280px]"
+                className="grid gap-6 py-7 transition-colors hover:bg-white/[0.018] lg:grid-cols-[120px_minmax(0,1fr)_320px]"
               >
-                <div>
-                  <div className="mb-3 flex flex-wrap items-center gap-2 font-mono text-xs uppercase text-white/40">
-                    <span>#{signal.id}</span>
-                    <span>{formatDate(signal.createdAt)}</span>
-                    <span>{formatTier(signal.minTier)}</span>
+                <div className="flex items-start justify-between gap-4 lg:block">
+                  <div>
+                    <div className="font-mono text-xs text-white/35">#{signal.id}</div>
+                    <div className="mt-2 text-sm text-white/55">{formatDate(signal.createdAt)}</div>
+                  </div>
+                  <div className="text-right lg:mt-5 lg:text-left">
+                    <div className="text-xs uppercase tracking-[0.16em] text-white/35">
+                      Tier
+                    </div>
+                    <div className="mt-1 text-sm text-white">{formatTier(signal.minTier)}</div>
+                  </div>
+                </div>
+
+                <div className="min-w-0">
+                  <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-white/40">
+                    <span>{signal.tokenSymbol}</span>
                     <span>{signal.sector}</span>
                     <span>{signal.movementType}</span>
                     <span>{signal.venue}</span>
-                    {!signal.active ? <span>Inactive</span> : null}
+                    {!signal.active ? <span className="text-[#fbbf24]">Archived</span> : null}
                   </div>
-                  <h2 className="font-display text-3xl leading-tight md:text-4xl">
+                  <h2 className="font-display text-2xl leading-tight md:text-3xl">
                     {signal.headline}
                   </h2>
-                  <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/55 md:text-base">
+                  <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/50">
                     {signal.publicSummary}
                   </p>
-                  <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/45">
-                    <span>Token: {signal.tokenSymbol}</span>
-                    <span>Analyst: {formatAddress(signal.analyst)}</span>
+                  <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/45">
+                    <span>Analyst {formatAddress(signal.analyst)}</span>
+                    <span>Source {signal.sourceChain || ACTIVE_CHAIN.shortName}</span>
                     <Link
                       href={`${ACTIVE_CHAIN.explorer}/address/${signal.analyst}`}
                       target="_blank"
-                      className="border-b border-white/25 text-white/65"
+                      className="inline-flex items-center gap-1 text-white/70 transition-colors hover:text-white"
                     >
                       Explorer
+                      <ArrowUpRight className="h-3 w-3" />
                     </Link>
                     <Link
                       href={`/signals/${signal.id}`}
-                      className="border-b border-white/25 text-white/65"
+                      className="inline-flex items-center gap-1 text-white/70 transition-colors hover:text-white"
                     >
                       Details
+                      <ArrowUpRight className="h-3 w-3" />
                     </Link>
-                  </div>
-                  <div className="mt-4 text-xs text-white/35">
-                    Source: {signal.sourceChain || ACTIVE_CHAIN.shortName}
                   </div>
                 </div>
 
@@ -310,20 +356,22 @@ export default function DashboardPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="flex h-full flex-col justify-between gap-6">
-                      <div className="flex items-start gap-3 text-white/55">
-                        <ShieldCheck className="mt-1 h-5 w-5 text-[#67e8f9]" />
-                        <p className="text-sm leading-relaxed">
-                          Private fields unlock only after an on-chain ACL grant.
+                    <div className="flex h-full flex-col justify-between gap-5">
+                      <div>
+                        <div className="text-xs uppercase tracking-[0.16em] text-white/35">
+                          Encrypted fields
+                        </div>
+                        <p className="mt-2 text-sm leading-relaxed text-white/55">
+                          Wallet, amount, confidence, entry, and risk stay sealed until access is granted on-chain.
                         </p>
                       </div>
                       <Button
                         onClick={() => unlockSignal(signal)}
-                        className="rounded-full bg-white text-black hover:bg-white/90"
+                        className="h-10 rounded-full bg-white text-black hover:bg-white/90"
                         disabled={!signal.active}
                       >
                         <Eye className="mr-2 h-4 w-4" />
-                        {signal.active ? "Unlock encrypted details" : "Signal archived"}
+                        {signal.active ? "Unlock" : "Archived"}
                       </Button>
                     </div>
                   )}

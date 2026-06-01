@@ -9,7 +9,7 @@ Think of it as a private intelligence layer for whale tracking: public enough to
 ## Live Deployment
 
 - App: `https://silent-whale-lake.vercel.app`
-- Latest Vercel deployment: `https://silent-whale-i3z8pmx0d-nikkus-projects-d0d225f5.vercel.app`
+- Vercel production alias: `https://silent-whale-lake.vercel.app`
 - Network: Ethereum Sepolia
 - Contract: `0x78653F6D4EAD1De09854E40DA6DCA1f6205CB6F0`
 - Deployment metadata: `deployments/silentwhale.eth-sepolia.json`
@@ -32,7 +32,7 @@ Core users:
 Current product surfaces:
 
 - Landing page explaining the privacy-first whale intelligence concept.
-- Dashboard for live encrypted signal discovery with search, filters, pagination, and inactive states.
+- Streamlined dashboard for on-chain signal discovery, live/gated counts, search, filters, pagination, and encrypted unlock actions.
 - Signal detail pages with lifecycle edit/archive controls.
 - Analyst marketplace pages with profiles and encrypted reputation unlocks.
 - Analyst console for publishing encrypted whale signals with generated scores and provenance.
@@ -75,7 +75,7 @@ Private watchlists follow the same idea: the wallet and confidence threshold are
 ## Current App Pages
 
 - `/` - product landing page and overview.
-- `/dashboard` - public signal feed plus encrypted-detail unlock flow.
+- `/dashboard` - simplified on-chain signal desk with filters, status counts, details links, and encrypted unlock flow.
 - `/signals/[id]` - signal detail, encrypted unlock, edit/archive lifecycle.
 - `/analysts` - analyst marketplace, profiles, encrypted reputation unlocks.
 - `/analyst` - publish encrypted signal handles to the contract.
@@ -103,6 +103,8 @@ NEXT_PUBLIC_SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 NEXT_PUBLIC_SILENT_WHALE_ADDRESS=0x78653F6D4EAD1De09854E40DA6DCA1f6205CB6F0
 NEXT_PUBLIC_USDC_ADDRESS=0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
 ```
+
+Vercel production and development envs should contain the same `NEXT_PUBLIC_*` values. The app does not currently need Pinata or OpenAI credentials at runtime, and deploy private keys should not be stored in Vercel for the frontend.
 
 Never commit a private key. For deploy, seed, or live QA, set it only in the shell process that needs it:
 
@@ -136,6 +138,19 @@ Remove-Item Env:\PRIVATE_KEY
 - `docs/threat-model.md` documents CoFHE handles, ACL grants, subscriptions, teams, alerts, and residual risks.
 - `docs/wave-5-qa.md` lists the local, testnet, wallet, and browser QA matrix.
 - `npm audit` still reports high advisories in the Hardhat and CoFHE-adjacent toolchain. The suggested automatic fixes require breaking upgrades such as Hardhat 3, so the current tested CoFHE-compatible Hardhat 2 stack is intentionally preserved.
+- The production dashboard was polished to avoid heavy card UI: it uses simple row-based signal reading, light dividers, direct details links, and one clear unlock action per signal.
+
+## Final QA Snapshot
+
+Last verified on June 1, 2026:
+
+- `npm run lint` passed.
+- `npm run test:contracts` passed with 9 tests.
+- `npm run security:check` passed with deployed bytecode at 24,494 bytes.
+- `npm run qa:wallet` passed against Sepolia chain `11155111`.
+- `npm run indexer` indexed 3 protocol signals.
+- `npm run build` passed. The build still reports webpack circular chunk warnings, but deployment succeeds.
+- Vercel production route smoke checks returned `200` for `/`, `/dashboard`, `/admin`, `/alerts`, `/analyst`, `/analysts`, `/dao`, `/subscription`, `/watchlist`, and `/signals/1`.
 
 ## Wave 5 - Completed Production Build
 
