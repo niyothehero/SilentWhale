@@ -273,9 +273,7 @@ export default function DashboardPage() {
       ) : signals.length === 0 ? (
         <EmptyState
           title="No signals yet."
-          copy="Publish an encrypted signal from the analyst console."
-          href="/analyst"
-          action="Publish a signal"
+          copy="This fresh deployment has no published signal history."
         />
       ) : (
         <div className="divide-y divide-white/10 border-y border-white/10">

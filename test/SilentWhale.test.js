@@ -15,8 +15,8 @@ describe("SilentWhale", function () {
   let contract;
   let usdc;
 
-  const whaleAddress = "0x000000000000000000000000000000000000dEaD";
-  const watchedWallet = "0x000000000000000000000000000000000000bEEF";
+  const whaleAddress = "0x0000000000000000000000000000000000001001";
+  const watchedWallet = "0x0000000000000000000000000000000000001002";
 
   async function encryptSignal(client, values = {}) {
     return client
@@ -33,11 +33,11 @@ describe("SilentWhale", function () {
   async function publishSignal(signer, encrypted, overrides = {}) {
     const tx = await contract.connect(signer).publishSignal(
       overrides.feedId ?? 0,
-      overrides.headline || "Tier-1 wallet accumulated an AI sector token",
+      overrides.headline || "Test encrypted signal",
       overrides.summary ||
-        "A smart wallet is building a position while public attention is still low.",
-      overrides.token || "AI",
-      overrides.sector || "Artificial Intelligence",
+        "Contract test signal for encrypted publish and decrypt flows.",
+      overrides.token || "TEST",
+      overrides.sector || "Testing",
       overrides.movementType || "Accumulation",
       overrides.venue || "DEX",
       overrides.sourceChain || "Ethereum Sepolia",

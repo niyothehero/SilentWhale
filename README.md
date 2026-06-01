@@ -109,8 +109,6 @@ Never commit a private key. For deploy, seed, or live QA, set it only in the she
 ```bash
 $env:PRIVATE_KEY="0x..."
 npm run deploy:sepolia
-npm run seed:sepolia
-npm run qa:sepolia
 Remove-Item Env:\PRIVATE_KEY
 ```
 
@@ -121,8 +119,8 @@ Remove-Item Env:\PRIVATE_KEY
 - `npm run compile`: compile Solidity contracts.
 - `npm run test:contracts`: run CoFHE mock contract tests.
 - `npm run deploy:sepolia`: deploy `SilentWhale` to Sepolia.
-- `npm run seed:sepolia`: publish one encrypted demo signal.
-- `npm run qa:sepolia`: run live Sepolia publish, subscribe, ACL grant, decrypt, watchlist, reputation, DAO team, and alert QA.
+- `npm run seed:sepolia`: test-only demo seeding; disabled unless `ALLOW_DEMO_SEED=true` is set for a disposable QA deployment.
+- `npm run qa:sepolia`: mutating live QA for publish, subscribe, ACL grant, decrypt, watchlist, reputation, DAO team, and alert flows; disabled unless `ALLOW_LIVE_QA_MUTATION=true` is set for a disposable QA deployment.
 - `npm run indexer`: index protocol signal events and optional ERC20 whale transfers into `cache/indexed-events.json`.
 - `npm run qa:wallet`: verify configured RPC, chain, deployed bytecode, and wallet recovery code paths.
 - `npm run security:check`: run bytecode and contract invariant checks for Wave 5 hardening.

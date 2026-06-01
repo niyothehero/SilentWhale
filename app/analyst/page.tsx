@@ -13,22 +13,21 @@ import { formatAddress, formatTier, getReadOnlyContract } from "@/lib/silent-wha
 const defaultForm = {
   feedId: "0",
   minTier: "1",
-  headline: "Tier-1 wallet accumulated an AI sector token",
-  publicSummary:
-    "A smart wallet is building a position while public attention is still low.",
-  tokenSymbol: "AI",
-  sector: "Artificial Intelligence",
+  headline: "",
+  publicSummary: "",
+  tokenSymbol: "",
+  sector: "",
   movementType: "Accumulation",
   venue: "DEX",
   sourceChain: "Ethereum Sepolia",
   eventRef: "manual-review",
   aiModel: "silent-score-v1.1",
   scoreProvenance: "manual analyst inputs",
-  whale: "0x000000000000000000000000000000000000dEaD",
-  amountUsd: "500000",
-  confidence: "92",
-  entry: "14.4",
-  risk: "18",
+  whale: "",
+  amountUsd: "",
+  confidence: "",
+  entry: "",
+  risk: "",
 };
 
 function percentToBps(value: string) {
@@ -105,7 +104,7 @@ export default function AnalystPage() {
       scoreProvenance: score.provenance,
       publicSummary: current.publicSummary.includes(score.narrative)
         ? current.publicSummary
-        : `${current.publicSummary} ${score.narrative}`,
+        : [current.publicSummary, score.narrative].filter(Boolean).join(" "),
     }));
     setStatus("Signal review generated.");
   };

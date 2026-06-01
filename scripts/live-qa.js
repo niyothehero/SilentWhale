@@ -20,6 +20,12 @@ async function createClient(provider, wallet) {
 }
 
 async function main() {
+  if (process.env.ALLOW_LIVE_QA_MUTATION !== "true") {
+    throw new Error(
+      "Live QA mutates the configured contract. Set ALLOW_LIVE_QA_MUTATION=true only for a disposable QA deployment."
+    );
+  }
+
   const privateKey = process.env.PRIVATE_KEY;
   const contractAddress = process.env.NEXT_PUBLIC_SILENT_WHALE_ADDRESS;
   const rpcUrl =
@@ -41,6 +47,10 @@ async function main() {
   console.log("Owner:", owner.address);
   console.log("Ephemeral subscriber:", subscriber.address);
 
+  const qaWhaleAddress =
+    process.env.QA_SIGNAL_WALLET || ethers.Wallet.createRandom().address;
+  const qaWatchWallet =
+    process.env.QA_WATCH_WALLET || ethers.Wallet.createRandom().address;
   const subscriberFundEth = process.env.QA_SUBSCRIBER_FUND_ETH || "0.03";
   const fundTx = await owner.sendTransaction({
     to: subscriber.address,
@@ -54,7 +64,7 @@ async function main() {
 
   const [whale, amount, confidence, entry, risk] = await ownerClient
     .encryptInputs([
-      Encryptable.address("0x000000000000000000000000000000000000dEaD"),
+      Encryptable.address(qaWhaleAddress),
       Encryptable.uint64(777000n),
       Encryptable.uint32(9300n),
       Encryptable.uint32(1610n),
@@ -64,10 +74,10 @@ async function main() {
 
   const publishTx = await ownerContract.publishSignal(
     0,
-    "QA smart wallet accumulated privacy infrastructure",
-    "A seeded QA signal proves publish, subscription, ACL grant, and decrypt on Sepolia.",
-    "FHE",
-    "Privacy Infrastructure",
+    "QA encrypted signal",
+    "Disposable QA signal for publish, subscription, ACL grant, and decrypt checks.",
+    "QA",
+    "Testing",
     "Accumulation",
     "DEX",
     "Ethereum Sepolia",
@@ -122,7 +132,7 @@ async function main() {
     .decryptForView(signal.encryptedConfidenceBps, FheTypes.Uint32)
     .execute();
 
-  if (decryptedWhale.toLowerCase() !== "0x000000000000000000000000000000000000dead") {
+  if (decryptedWhale.toLowerCase() !== qaWhaleAddress.toLowerCase()) {
     throw new Error("Wrong decrypted whale address.");
   }
   if (decryptedAmount !== 777000n || decryptedConfidence !== 9300n) {
@@ -136,7 +146,7 @@ async function main() {
 
   const [watchWallet, watchConfidence] = await subscriberClient
     .encryptInputs([
-      Encryptable.address("0x000000000000000000000000000000000000bEEF"),
+      Encryptable.address(qaWatchWallet),
       Encryptable.uint32(8800n),
     ])
     .execute();
@@ -159,8 +169,7 @@ async function main() {
     .decryptForView(watchItem.encryptedMinConfidenceBps, FheTypes.Uint32)
     .execute();
   if (
-    decryptedWatchWallet.toLowerCase() !==
-      "0x000000000000000000000000000000000000beef" ||
+    decryptedWatchWallet.toLowerCase() !== qaWatchWallet.toLowerCase() ||
     decryptedWatchConfidence !== 8800n
   ) {
     throw new Error("Wrong decrypted watchlist values.");

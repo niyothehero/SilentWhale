@@ -9,6 +9,12 @@ const { chains } = require("@cofhe/sdk/chains");
 const artifact = require("../artifacts/contracts/SilentWhale.sol/SilentWhale.json");
 
 async function main() {
+  if (process.env.ALLOW_DEMO_SEED !== "true") {
+    throw new Error(
+      "Demo seeding is disabled by default. Set ALLOW_DEMO_SEED=true only for a disposable QA deployment."
+    );
+  }
+
   const privateKey = process.env.PRIVATE_KEY;
   const address = process.env.NEXT_PUBLIC_SILENT_WHALE_ADDRESS;
   const rpcUrl =
@@ -25,6 +31,8 @@ async function main() {
     provider
   );
   const contract = new ethers.Contract(address, artifact.abi, wallet);
+  const seedWhaleAddress =
+    process.env.QA_SIGNAL_WALLET || ethers.Wallet.createRandom().address;
 
   const config = createCofheConfig({ supportedChains: [chains.sepolia] });
   const client = createCofheClient(config);
@@ -35,7 +43,7 @@ async function main() {
   console.log("Encrypting seed signal as", wallet.address);
   const encrypted = await client
     .encryptInputs([
-      Encryptable.address("0x000000000000000000000000000000000000dEaD"),
+      Encryptable.address(seedWhaleAddress),
       Encryptable.uint64(500000n),
       Encryptable.uint32(9200n),
       Encryptable.uint32(1440n),
@@ -49,16 +57,16 @@ async function main() {
 
   const tx = await contract.publishSignal(
     0,
-    "Tier-1 wallet accumulated an AI sector token",
-    "A smart wallet is building a position while public attention is still low.",
-    "AI",
-    "Artificial Intelligence",
+    "QA encrypted signal",
+    "Disposable QA signal for publish, subscription, ACL grant, and decrypt checks.",
+    "QA",
+    "Testing",
     "Accumulation",
     "DEX",
     "Ethereum Sepolia",
     `seed:${Date.now()}`,
     "silent-score-v1.1",
-    "seeded-demo-signal",
+    "test-only-demo-seed",
     1,
     encrypted[0],
     encrypted[1],

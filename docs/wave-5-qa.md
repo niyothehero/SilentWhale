@@ -13,12 +13,19 @@ npm run build
 
 ## Testnet
 
+Fresh production deployment:
+
 ```bash
 npm run deploy:sepolia
-npm run seed:sepolia
-npm run qa:sepolia
 npm run qa:wallet
 npm run indexer
+```
+
+Disposable QA deployment only:
+
+```bash
+$env:ALLOW_DEMO_SEED="true"; npm run seed:sepolia; Remove-Item Env:\ALLOW_DEMO_SEED
+$env:ALLOW_LIVE_QA_MUTATION="true"; npm run qa:sepolia; Remove-Item Env:\ALLOW_LIVE_QA_MUTATION
 ```
 
 ## Wallet UX
