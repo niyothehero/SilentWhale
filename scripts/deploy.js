@@ -17,7 +17,24 @@ async function main() {
   await silentWhale.waitForDeployment();
 
   const address = await silentWhale.getAddress();
+  const deployTx = silentWhale.deploymentTransaction();
+  const deployReceipt = deployTx ? await deployTx.wait() : undefined;
   console.log("SilentWhale deployed:", address);
+
+  const defaultSepoliaUsdc =
+    hre.network.name === "eth-sepolia"
+      ? "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"
+      : undefined;
+  const paymentToken =
+    process.env.NEXT_PUBLIC_USDC_ADDRESS ||
+    process.env.USDC_ADDRESS ||
+    defaultSepoliaUsdc;
+  if (paymentToken && hre.ethers.isAddress(paymentToken)) {
+    const decimals = Number(process.env.USDC_DECIMALS || "6");
+    const configTx = await silentWhale.setPaymentToken(paymentToken, decimals, true);
+    await configTx.wait();
+    console.log("Payment token enabled:", paymentToken, "decimals", decimals);
+  }
 
   const deployment = {
     contract: "SilentWhale",
@@ -25,6 +42,18 @@ async function main() {
     network: hre.network.name,
     chainId: Number(network.chainId),
     deployer: deployer.address,
+    deployTx: deployTx?.hash || null,
+    deployedBlock: deployReceipt?.blockNumber || null,
+    paymentToken: paymentToken || null,
+    features: [
+      "encrypted-signals",
+      "erc20-subscriptions",
+      "payment-receipts",
+      "dao-teams",
+      "analyst-marketplace",
+      "signal-lifecycle",
+      "alert-receipts",
+    ],
     deployedAt: new Date().toISOString(),
   };
 

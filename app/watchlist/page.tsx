@@ -120,6 +120,20 @@ export default function WatchlistPage() {
     }
   };
 
+  const toggleItem = async (item: WatchlistRecord) => {
+    if (!address) return connect();
+    setStatus(item.active ? "Archiving watchlist item" : "Reactivating watchlist item");
+    try {
+      const contract = await getWriteContract();
+      const tx = await contract.setWatchlistItemActive(item.index, !item.active);
+      await tx.wait();
+      await loadWatchlist();
+      setStatus(item.active ? "Watchlist item archived" : "Watchlist item reactivated");
+    } catch (error: any) {
+      setStatus(error?.shortMessage || error?.message || "Watchlist update failed.");
+    }
+  };
+
   return (
     <PageFrame
       eyebrow="Private Watchlists"
@@ -192,7 +206,7 @@ export default function WatchlistPage() {
                   <article key={item.index} className="grid gap-6 py-7 md:grid-cols-2">
                     <div>
                       <div className="mb-3 font-mono text-xs uppercase tracking-widest text-white/40">
-                        #{item.index} / {formatDate(item.createdAt)}
+                        #{item.index} / {formatDate(item.createdAt)} / {item.active ? "Active" : "Inactive"}
                       </div>
                       <h2 className="font-display text-3xl">{item.publicNote}</h2>
                       <p className="mt-3 break-all font-mono text-xs text-white/35">
@@ -214,6 +228,7 @@ export default function WatchlistPage() {
                       ) : (
                         <Button
                           onClick={() => revealItem(item)}
+                          disabled={!item.active}
                           variant="outline"
                           className="rounded-full border-white/20 bg-transparent"
                         >
@@ -221,6 +236,13 @@ export default function WatchlistPage() {
                           Decrypt
                         </Button>
                       )}
+                      <Button
+                        onClick={() => toggleItem(item)}
+                        variant="outline"
+                        className="mt-3 rounded-full border-white/20 bg-transparent"
+                      >
+                        {item.active ? "Archive" : "Reactivate"}
+                      </Button>
                     </div>
                   </article>
                 );

@@ -16,6 +16,7 @@ const plans = [
       "Upgrade any time",
     ],
     cta: "Open dashboard",
+    href: "/dashboard",
     highlight: false,
   },
   {
@@ -32,6 +33,7 @@ const plans = [
       "No exposed wallet details",
     ],
     cta: "Subscribe Pro",
+    href: "/subscription",
     highlight: true,
   },
   {
@@ -42,12 +44,13 @@ const plans = [
       "DAO intelligence feeds",
       "Encrypted watchlists",
       "Analyst reputation",
-      "Team roadmap",
-      "Shared permit direction",
-      "Indexer-ready contract",
+      "Team seats",
+      "Shared decrypt access",
+      "Indexer-backed signals",
       "Institutional workflow",
     ],
     cta: "Choose DAO",
+    href: "/subscription",
     highlight: false,
   },
 ];
@@ -166,7 +169,8 @@ export function PricingSection() {
                   </ul>
 
                   {/* CTA */}
-                  <button
+                  <a
+                    href={plan.href}
                     className={`w-full py-4 flex items-center justify-center gap-2 text-sm font-medium transition-all group ${
                       plan.highlight
                         ? "bg-foreground text-background hover:bg-foreground/90"
@@ -175,7 +179,7 @@ export function PricingSection() {
                   >
                     {plan.cta}
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </button>
+                  </a>
                 </div>
               </div>
             ))}
@@ -200,7 +204,7 @@ export function PricingSection() {
               Permit-based decrypt
             </span>
           </div>
-          <a href="#" className="text-sm underline underline-offset-4 hover:text-foreground transition-colors">
+          <a href="/subscription" className="text-sm underline underline-offset-4 hover:text-foreground transition-colors">
             Compare access tiers
           </a>
         </div>

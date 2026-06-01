@@ -9,13 +9,14 @@ Think of it as a private intelligence layer for whale tracking: public enough to
 ## Live Deployment
 
 - App: `https://silent-whale-lake.vercel.app`
-- Latest Vercel deployment: `https://silent-whale-q2wt2qv4e-nikkus-projects-d0d225f5.vercel.app`
+- Latest Vercel deployment: `https://silent-whale-i3z8pmx0d-nikkus-projects-d0d225f5.vercel.app`
 - Network: Ethereum Sepolia
-- Contract: `0x4756117A9Ea918B12A5AdeF7EfFe5484E38C114E`
+- Contract: `0x78653F6D4EAD1De09854E40DA6DCA1f6205CB6F0`
 - Deployment metadata: `deployments/silentwhale.eth-sepolia.json`
-- Seed signal tx: `0xc0177449bb7f0340f286890b0d3b45819294befa8cc2491222c27afffbe32248`
-- Latest live QA signal tx: `0x3406ecec4bc7c26b31c4c6112a3e5f8346bf5dc1d3c3c993ca0702a53d61266b`
-- Latest live QA access grant tx: `0x7a5fe24c4a01b18f91a060592a71625878663fa35731ea99309047b421e8c789`
+- Deploy tx: `0x928aaeb0980614ca7c6be5b37b808227c6ed74b1400e9908ee418bdab55ca2f3`
+- Seed signal tx: `0x1812b8b2395e198b3041648d8632d26307798f1df0de98333702873b5f5d5de8`
+- Latest live QA signal tx: `0x36fafe8cdb43a8ae2b3adbc205fc7cb8f870987674553190ed628befb3a854ff`
+- Latest live QA access grant tx: `0xc01adcf50b68e9ab54fe9afd078344ebc494f41552c3020025aa418317188bc0`
 - Live QA result: `LIVE_QA_OK`
 
 ## What The App Does
@@ -31,46 +32,58 @@ Core users:
 Current product surfaces:
 
 - Landing page explaining the privacy-first whale intelligence concept.
-- Dashboard for live encrypted signal discovery.
-- Analyst console for publishing encrypted whale signals.
-- Subscription page for on-chain ETH tier access.
+- Dashboard for live encrypted signal discovery with search, filters, pagination, and inactive states.
+- Signal detail pages with lifecycle edit/archive controls.
+- Analyst marketplace pages with profiles and encrypted reputation unlocks.
+- Analyst console for publishing encrypted whale signals with generated scores and provenance.
+- Subscription page for ETH and ERC20/USDC-ready settlement plus billing receipts.
 - Private watchlist page for encrypted wallet and threshold storage.
-- Admin page for analyst approval and tier pricing.
-- Roadmap page for build status and next steps.
+- Alert receipt history for owner/indexer-recorded private watchlist matches.
+- DAO team workspace page for shared decrypt seats.
+- Admin console for feeds, grants, pricing, payment token config, treasury, cooldowns, and alerts.
 
 ## How It Works
 
 1. An analyst prepares a signal with public context plus sensitive fields.
-2. The frontend encrypts wallet, amount, confidence, entry score, and risk score with `@cofhe/sdk`.
-3. `SilentWhale.sol` stores the encrypted handles on-chain.
-4. A subscriber buys a Pro, Elite, or DAO tier with `subscribe`.
+2. The frontend scores/classifies the signal and encrypts wallet, amount, confidence, entry score, and risk score with `@cofhe/sdk`.
+3. `SilentWhale.sol` stores encrypted handles plus public indexed metadata on-chain.
+4. A subscriber buys a Pro, Elite, or DAO tier with ETH or the owner-configured ERC20 settlement token.
 5. The subscriber calls `grantSignalAccess` for an eligible signal.
-6. The contract grants FHE ACL access only if the wallet has enough tier access.
+6. The contract grants FHE ACL access only if the wallet has enough personal or DAO-team tier access.
 7. The frontend uses the wallet permit to decrypt locally and display plaintext to that user.
 
-Private watchlists follow the same idea: the wallet and confidence threshold are encrypted before being written on-chain, and only the owner can decrypt their watchlist data.
+Private watchlists follow the same idea: the wallet and confidence threshold are encrypted before being written on-chain, and only the owner can decrypt their watchlist data. Alert receipts store hashed private rules rather than raw strategy.
 
 ## Current On-Chain Features
 
 - Encrypted whale signals using `InEaddress`, `InEuint64`, and `InEuint32`.
 - Feed-based signal publishing with Pro, Elite, and DAO tier requirements.
+- Indexed metadata fields for movement type, venue, source chain, event ref, AI model, and score provenance.
 - Owner-gated analyst approval before curated publishing.
-- On-chain native ETH subscriptions.
+- Native ETH subscriptions and owner-configured ERC20 subscription settlement.
+- Payment receipts and billing history.
 - ACL-gated signal unlocks before decrypt.
 - Encrypted private watchlists.
 - Encrypted analyst reputation storage.
-- Owner controls for analyst status and tier prices.
-- Live Sepolia QA script covering publish, subscribe, ACL grant, decrypt, watchlist, and analyst score flows.
+- Analyst profiles and marketplace metadata.
+- DAO team accounts with seat-based shared decrypt access.
+- Alert receipts keyed by private rule hashes.
+- Signal metadata updates, archive/reactivate lifecycle controls, and anti-spam publish cooldown.
+- Owner controls for analysts, feeds, grants, tier prices, token config, treasury withdrawals, and alert recording.
+- Live Sepolia QA script covering publish, subscribe, ACL grant, decrypt, watchlist, analyst score/profile, DAO seats, and alert flows.
 
 ## Current App Pages
 
 - `/` - product landing page and overview.
 - `/dashboard` - public signal feed plus encrypted-detail unlock flow.
+- `/signals/[id]` - signal detail, encrypted unlock, edit/archive lifecycle.
+- `/analysts` - analyst marketplace, profiles, encrypted reputation unlocks.
 - `/analyst` - publish encrypted signal handles to the contract.
 - `/watchlist` - add and decrypt private encrypted watchlist items.
-- `/subscription` - buy tier access on-chain.
-- `/admin` - owner-only analyst approval and tier price controls.
-- `/roadmap` - current build milestones and next planned protocol work.
+- `/alerts` - hashed private alert receipt history.
+- `/dao` - DAO workspace and team seat management.
+- `/subscription` - buy tier access on-chain with ETH or ERC20.
+- `/admin` - owner-only protocol operations.
 
 ## Setup
 
@@ -87,7 +100,8 @@ Required local env:
 ```bash
 NEXT_PUBLIC_CHAIN_ID=11155111
 NEXT_PUBLIC_SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
-NEXT_PUBLIC_SILENT_WHALE_ADDRESS=0x4756117A9Ea918B12A5AdeF7EfFe5484E38C114E
+NEXT_PUBLIC_SILENT_WHALE_ADDRESS=0x78653F6D4EAD1De09854E40DA6DCA1f6205CB6F0
+NEXT_PUBLIC_USDC_ADDRESS=0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
 ```
 
 Never commit a private key. For deploy, seed, or live QA, set it only in the shell process that needs it:
@@ -108,138 +122,35 @@ Remove-Item Env:\PRIVATE_KEY
 - `npm run test:contracts`: run CoFHE mock contract tests.
 - `npm run deploy:sepolia`: deploy `SilentWhale` to Sepolia.
 - `npm run seed:sepolia`: publish one encrypted demo signal.
-- `npm run qa:sepolia`: run live Sepolia publish, subscribe, ACL grant, decrypt, watchlist, and reputation QA.
+- `npm run qa:sepolia`: run live Sepolia publish, subscribe, ACL grant, decrypt, watchlist, reputation, DAO team, and alert QA.
+- `npm run indexer`: index protocol signal events and optional ERC20 whale transfers into `cache/indexed-events.json`.
+- `npm run qa:wallet`: verify configured RPC, chain, deployed bytecode, and wallet recovery code paths.
+- `npm run security:check`: run bytecode and contract invariant checks for Wave 5 hardening.
 
 ## Production Notes
 
-- Vercel production and development envs are set for the current Sepolia contract.
+- Fhenix CoFHE currently supports Sepolia, Arbitrum Sepolia, and Base Sepolia testnets; mainnet support is not live yet.
 - `next build` runs TypeScript validation.
 - The app uses npm as the package manager with `package-lock.json`.
+- `hardhat.config.js` uses optimizer runs `1` so the Wave 5 contract stays under the EIP-170 deploy limit.
+- `docs/threat-model.md` documents CoFHE handles, ACL grants, subscriptions, teams, alerts, and residual risks.
+- `docs/wave-5-qa.md` lists the local, testnet, wallet, and browser QA matrix.
 - `npm audit` still reports high advisories in the Hardhat and CoFHE-adjacent toolchain. The suggested automatic fixes require breaking upgrades such as Hardhat 3, so the current tested CoFHE-compatible Hardhat 2 stack is intentionally preserved.
 
-## Wave 5 - Missing Features And Next Build Work
+## Wave 5 - Completed Production Build
 
-Wave 5 should move SilentWhale from a working testnet MVP into a more complete production protocol. These are the main issues and missing pieces found while reviewing the current app.
+Wave 5 turns SilentWhale into a complete testnet protocol surface while staying aligned with current CoFHE support on Sepolia, Arbitrum Sepolia, and Base Sepolia.
 
-### 1. Real Whale Indexer
-
-Current state: signals are manually published from the analyst console or seed/QA scripts. The dashboard reads recent signals directly from the contract.
-
-Wave 5 work:
-
-- Build an indexer that watches selected chains for whale wallet movement.
-- Add token, sector, size, DEX, CEX, bridge, and LP movement classification.
-- Store indexed metadata in a queryable backend.
-- Add filters, search, pagination, and signal detail pages.
-- Keep sensitive raw wallet intelligence encrypted before publishing.
-
-### 2. AI Signal Engine
-
-Current state: confidence, entry score, and risk score are manually entered by the analyst.
-
-Wave 5 work:
-
-- Add an AI scoring service for confidence, risk, narrative, and timing.
-- Generate signal explanations from wallet history and market context.
-- Write encrypted scores back on-chain.
-- Add analyst review before final publish.
-- Track model version and score provenance for trust.
-
-### 3. Alerts And Watchlist Triggers
-
-Current state: private watchlists are stored and decryptable, but they do not trigger real notifications.
-
-Wave 5 work:
-
-- Match indexed whale events against encrypted/private watchlist rules.
-- Add in-app notifications.
-- Add email, Telegram, Discord, or webhook alerts.
-- Add alert history and read/unread state.
-- Support threshold changes without leaking strategy.
-
-### 4. ERC20 And USDC Payments
-
-Current state: subscriptions use native ETH only.
-
-Wave 5 work:
-
-- Add ERC20 subscription settlement, especially USDC.
-- Support stable monthly pricing independent of ETH volatility.
-- Add payment receipts and billing history.
-- Add owner withdrawal UI.
-- Add tests for underpayment, refunds, renewals, and token decimals.
-
-### 5. DAO And Team Access
-
-Current state: DAO is a tier label, but there is no full team workspace or seat management.
-
-Wave 5 work:
-
-- Add organizations/team accounts.
-- Add team seats and role-based permissions.
-- Add shared decrypt access for approved members.
-- Add delegated permits where supported.
-- Add DAO dashboard views for institutional intelligence desks.
-
-### 6. Analyst Marketplace And Reputation
-
-Current state: analyst approval exists, and encrypted analyst score storage exists, but the UI does not expose a full marketplace.
-
-Wave 5 work:
-
-- Add analyst profiles and feed pages.
-- Display public performance stats and encrypted reputation unlocks.
-- Add feed subscription analytics.
-- Add signal outcome tracking.
-- Add dispute/report flows for bad or misleading signals.
-
-### 7. Signal Lifecycle Management
-
-Current state: the contract supports active/inactive signals, but the frontend does not expose full signal management.
-
-Wave 5 work:
-
-- Add edit/archive controls for analysts and admins.
-- Add signal detail pages.
-- Add expired, revoked, and inactive states in the dashboard.
-- Add audit logs for signal changes.
-- Add richer event history from publish to unlock.
-
-### 8. Admin Console Completion
-
-Current state: admin can approve analysts and update tier prices. The contract has more owner capabilities than the UI exposes.
-
-Wave 5 work:
-
-- Add feed create/update controls.
-- Add owner grant subscription controls.
-- Add treasury balance and withdraw controls.
-- Add admin analytics for subscribers, revenue, and signal counts.
-- Add safer confirmation states for owner-only writes.
-
-### 9. Wallet And Network QA Matrix
-
-Current state: live QA proves the on-chain path, and the deployed app renders cleanly. Full wallet-extension UX testing should be expanded.
-
-Wave 5 work:
-
-- Test MetaMask and other browser wallets across desktop and mobile.
-- Test wrong-network switching and chain-add flows.
-- Test rejected signatures and failed transactions.
-- Add clear user-facing recovery messages.
-- Add Playwright or browser-extension QA scripts for connect, subscribe, publish, and decrypt flows.
-
-### 10. Security And Dependency Hardening
-
-Current state: the app is working on Sepolia, but the dependency audit still flags toolchain packages that need a careful migration plan.
-
-Wave 5 work:
-
-- Plan CoFHE-compatible Hardhat/toolchain upgrades.
-- Add slither/static-analysis checks for Solidity.
-- Add threat model documentation for encrypted handles, ACL grants, and subscriptions.
-- Add rate limits or anti-spam rules for signal publishing.
-- Add monitoring for contract events and failed transactions.
+- Real indexer foundation: `scripts/indexer.js` indexes SilentWhale protocol events and optional ERC20 whale transfers. Dashboard search, filters, pagination, classifications, source chain, venue, event ref, and detail pages are live.
+- AI signal engine: analyst publish flow can generate confidence, entry, risk, narrative, model version, and provenance before encrypting scores and writing handles on-chain.
+- Alerts and watchlist receipts: private watchlists remain encrypted, and the owner/indexer can record hashed rule receipts with read/unread state in `/alerts`. The matcher remains off-chain so raw watchlist strategy is never written to the contract.
+- ERC20 and USDC payments: the contract supports owner-configured ERC20 settlement, stable token tier prices, receipts, billing history, approvals, and token treasury withdrawal.
+- DAO and team access: DAO subscribers can create team workspaces, add seats, and share decrypt eligibility with members while the owner subscription remains active.
+- Analyst marketplace and reputation: analysts can publish profiles, public feed coverage is shown in `/analysts`, and encrypted reputation scores unlock through CoFHE permits.
+- Signal lifecycle management: `/signals/[id]` supports detail pages, metadata edits, archive/reactivate controls, inactive dashboard states, and event-backed history.
+- Admin console completion: `/admin` now covers feeds, analyst allowlist, ETH/token pricing, owner grants, treasury, cooldowns, analytics, and alert recording.
+- Wallet and network QA: `npm run qa:wallet` checks RPC chain, deployed bytecode, and wallet recovery code paths; `docs/wave-5-qa.md` lists browser wallet scenarios.
+- Security hardening: custom errors keep bytecode deployable, treasury writes use `nonReentrant`, cooldowns reduce spam, and `docs/threat-model.md` captures residual risks.
 
 ## Long-Term Ideas
 
@@ -250,4 +161,3 @@ Wave 5 work:
 - Analyst revenue sharing.
 - API access for funds, bots, and research desks.
 - Cross-chain whale intelligence across Ethereum, Base, Arbitrum, and more.
-

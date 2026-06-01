@@ -1,13 +1,14 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { Radio, Send, Shield } from "lucide-react";
+import { BrainCircuit, Radio, Send, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageFrame } from "@/components/app/page-frame";
 import { useSilentWhale } from "@/hooks/use-silent-whale";
 import { encryptSignalInputs } from "@/lib/cofhe";
-import { formatAddress, formatTier } from "@/lib/silent-whale";
+import { scoreSignalDraft } from "@/lib/signal-engine";
+import { formatAddress, formatTier, getReadOnlyContract } from "@/lib/silent-whale";
 
 const defaultForm = {
   feedId: "0",
@@ -17,6 +18,12 @@ const defaultForm = {
     "A smart wallet is building a position while public attention is still low.",
   tokenSymbol: "AI",
   sector: "Artificial Intelligence",
+  movementType: "Accumulation",
+  venue: "DEX",
+  sourceChain: "Ethereum Sepolia",
+  eventRef: "manual-review",
+  aiModel: "silent-score-v1.1",
+  scoreProvenance: "manual analyst inputs",
   whale: "0x000000000000000000000000000000000000dEaD",
   amountUsd: "500000",
   confidence: "92",
@@ -33,9 +40,74 @@ export default function AnalystPage() {
   const [form, setForm] = useState(defaultForm);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const [canPublish, setCanPublish] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    async function loadPublishAccess() {
+      if (!address || !configured) {
+        setCanPublish(false);
+        return;
+      }
+      try {
+        const contract = getReadOnlyContract();
+        if (!contract) return;
+        const [owner, approved, feed] = await Promise.all([
+          contract.owner(),
+          contract.approvedAnalysts(address),
+          contract.getFeed(Number(form.feedId || "0")),
+        ]);
+        const account = address.toLowerCase();
+        if (active) {
+          setCanPublish(
+            approved ||
+              account === owner.toLowerCase() ||
+              account === feed.curator.toLowerCase()
+          );
+        }
+      } catch {
+        if (active) setCanPublish(false);
+      }
+    }
+    loadPublishAccess();
+    return () => {
+      active = false;
+    };
+  }, [address, configured, form.feedId]);
 
   const update = (key: keyof typeof defaultForm, value: string) => {
     setForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const runSignalReview = () => {
+    if (!ethers.isAddress(form.whale)) {
+      setStatus("Enter a valid whale wallet before scoring.");
+      return;
+    }
+    const score = scoreSignalDraft({
+      tokenSymbol: form.tokenSymbol,
+      sector: form.sector,
+      amountUsd: form.amountUsd,
+      whale: form.whale,
+      venue: form.venue,
+      movementType: form.movementType,
+    });
+    setForm((current) => ({
+      ...current,
+      confidence: score.confidence,
+      entry: score.entry,
+      risk: score.risk,
+      movementType: score.movementType,
+      venue: score.venue,
+      sourceChain: score.sourceChain,
+      eventRef: score.eventRef,
+      aiModel: score.model,
+      scoreProvenance: score.provenance,
+      publicSummary: current.publicSummary.includes(score.narrative)
+        ? current.publicSummary
+        : `${current.publicSummary} ${score.narrative}`,
+    }));
+    setStatus("Signal review generated.");
   };
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
@@ -50,6 +122,10 @@ export default function AnalystPage() {
     }
     if (!ethers.isAddress(form.whale)) {
       setStatus("Enter a valid whale wallet address.");
+      return;
+    }
+    if (!canPublish) {
+      setStatus("This wallet is not approved to publish to the selected feed.");
       return;
     }
 
@@ -76,6 +152,12 @@ export default function AnalystPage() {
         form.publicSummary,
         form.tokenSymbol,
         form.sector,
+        form.movementType,
+        form.venue,
+        form.sourceChain,
+        form.eventRef,
+        form.aiModel,
+        form.scoreProvenance,
         Number(form.minTier),
         encrypted[0],
         encrypted[1],
@@ -143,6 +225,55 @@ export default function AnalystPage() {
 
           <div className="grid gap-6 md:grid-cols-2">
             <label>
+              <span className="mb-2 block text-sm text-white/45">Movement</span>
+              <select
+                value={form.movementType}
+                onChange={(event) => update("movementType", event.target.value)}
+                className="w-full border-b border-white/20 bg-background py-3 outline-none focus:border-white"
+              >
+                {["Accumulation", "CEX outflow", "CEX inflow", "Bridge", "LP movement", "Distribution"].map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span className="mb-2 block text-sm text-white/45">Venue</span>
+              <select
+                value={form.venue}
+                onChange={(event) => update("venue", event.target.value)}
+                className="w-full border-b border-white/20 bg-background py-3 outline-none focus:border-white"
+              >
+                {["DEX", "CEX", "Bridge", "LP", "OTC"].map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span className="mb-2 block text-sm text-white/45">Source chain</span>
+              <input
+                value={form.sourceChain}
+                onChange={(event) => update("sourceChain", event.target.value)}
+                className="w-full border-b border-white/20 bg-transparent py-3 outline-none focus:border-white"
+                required
+              />
+            </label>
+            <label>
+              <span className="mb-2 block text-sm text-white/45">Indexer ref</span>
+              <input
+                value={form.eventRef}
+                onChange={(event) => update("eventRef", event.target.value)}
+                className="w-full border-b border-white/20 bg-transparent py-3 outline-none focus:border-white"
+                required
+              />
+            </label>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <label>
               <span className="mb-2 block text-sm text-white/45">Feed</span>
               <select
                 value={form.feedId}
@@ -167,6 +298,27 @@ export default function AnalystPage() {
                   </option>
                 ))}
               </select>
+            </label>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <label>
+              <span className="mb-2 block text-sm text-white/45">AI model</span>
+              <input
+                value={form.aiModel}
+                onChange={(event) => update("aiModel", event.target.value)}
+                className="w-full border-b border-white/20 bg-transparent py-3 outline-none focus:border-white"
+                required
+              />
+            </label>
+            <label>
+              <span className="mb-2 block text-sm text-white/45">Score provenance</span>
+              <input
+                value={form.scoreProvenance}
+                onChange={(event) => update("scoreProvenance", event.target.value)}
+                className="w-full border-b border-white/20 bg-transparent py-3 outline-none focus:border-white"
+                required
+              />
             </label>
           </div>
         </div>
@@ -242,13 +394,17 @@ export default function AnalystPage() {
 
           <Button
             type="submit"
-            disabled={busy}
+            disabled={busy || Boolean(address && configured && !canPublish)}
             className="h-12 rounded-full bg-white px-8 text-black hover:bg-white/90"
           >
             {address ? (
               <>
                 <Send className="mr-2 h-4 w-4" />
-                {busy ? "Publishing" : "Publish signal"}
+                {busy
+                  ? "Publishing"
+                  : canPublish
+                    ? "Publish signal"
+                    : "Approval required"}
               </>
             ) : (
               <>
@@ -256,6 +412,17 @@ export default function AnalystPage() {
                 Connect wallet
               </>
             )}
+          </Button>
+
+          <Button
+            type="button"
+            onClick={runSignalReview}
+            disabled={busy}
+            variant="outline"
+            className="ml-0 h-12 rounded-full border-white/20 bg-transparent px-8 md:ml-3"
+          >
+            <BrainCircuit className="mr-2 h-4 w-4" />
+            Generate scores
           </Button>
 
           {status ? <p className="text-sm text-white/50">{status}</p> : null}

@@ -26,17 +26,25 @@ export function useSilentWhale() {
 
   const refreshWallet = useCallback(async () => {
     if (!window.ethereum) return;
-    const accounts = (await window.ethereum.request({
-      method: "eth_accounts",
-    })) as string[];
-    const chainHex = (await window.ethereum.request({
-      method: "eth_chainId",
-    })) as string;
-    setWallet((current) => ({
-      ...current,
-      address: accounts[0],
-      chainId: Number(chainHex),
-    }));
+    try {
+      const [accounts, chainHex] = await Promise.all([
+        window.ethereum.request({ method: "eth_accounts" }) as Promise<string[]>,
+        window.ethereum.request({ method: "eth_chainId" }) as Promise<string>,
+      ]);
+      setWallet((current) => ({
+        ...current,
+        address: accounts[0],
+        chainId: Number(chainHex),
+        error: undefined,
+      }));
+    } catch (error: any) {
+      setWallet((current) => ({
+        ...current,
+        address: undefined,
+        chainId: undefined,
+        error: error?.message || "Could not refresh wallet state.",
+      }));
+    }
   }, []);
 
   const ensureNetwork = useCallback(async () => {

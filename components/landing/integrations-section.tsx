@@ -221,7 +221,7 @@ export function IntegrationsSection() {
             ))}
           </div>
 
-          <a href="#" className="group inline-flex items-center gap-2 text-sm font-mono text-muted-foreground hover:text-foreground transition-colors">
+          <a href="/dashboard" className="group inline-flex items-center gap-2 text-sm font-mono text-muted-foreground hover:text-foreground transition-colors">
             View all integrations
             <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
           </a>

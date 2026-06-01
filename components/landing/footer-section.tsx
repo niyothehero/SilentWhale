@@ -12,29 +12,24 @@ const footerLinks = {
     { name: "Admin", href: "/admin" },
   ],
   Protocol: [
-    { name: "Roadmap", href: "/roadmap" },
     { name: "Fhenix docs", href: "https://cofhe-docs.fhenix.zone/" },
-    { name: "Contract tests", href: "/roadmap" },
-    { name: "Deploy notes", href: "/roadmap" },
+    { name: "Signal feed", href: "/dashboard" },
+    { name: "Protocol admin", href: "/admin" },
   ],
   Company: [
-    { name: "About", href: "#" },
-    { name: "Blog", href: "#" },
-    { name: "DAO feeds", href: "/subscription", badge: "Soon" },
-    { name: "Contact", href: "#" },
+    { name: "About", href: "/#features" },
+    { name: "Process", href: "/#how-it-works" },
+    { name: "DAO feeds", href: "/dao" },
+    { name: "Access", href: "/subscription" },
   ],
   Legal: [
-    { name: "Privacy", href: "#" },
-    { name: "Terms", href: "#" },
-    { name: "Security", href: "/roadmap" },
+    { name: "Threat model", href: "/alerts" },
+    { name: "Access policy", href: "/subscription" },
+    { name: "Security", href: "https://cofhe-docs.fhenix.zone/" },
   ],
 };
 
-const socialLinks = [
-  { name: "Twitter", href: "#" },
-  { name: "GitHub", href: "#" },
-  { name: "LinkedIn", href: "#" },
-];
+const socialLinks: { name: string; href: string }[] = [];
 
 function AnimatedWaveCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -115,7 +110,7 @@ export function FooterSection() {
           <div className="grid grid-cols-2 md:grid-cols-6 gap-12 lg:gap-8">
             {/* Brand Column */}
             <div className="col-span-2">
-              <a href="#" className="inline-flex items-center gap-2 mb-6">
+              <a href="/" className="inline-flex items-center gap-2 mb-6">
                 <span className="text-2xl font-display text-white">SilentWhale</span>
                 <span className="text-xs text-white/40 font-mono">TM</span>
               </a>
@@ -125,6 +120,7 @@ export function FooterSection() {
               </p>
 
               {/* Social Links */}
+              {socialLinks.length > 0 ? (
               <div className="flex gap-6">
                 {socialLinks.map((link) => (
                   <a
@@ -137,6 +133,7 @@ export function FooterSection() {
                   </a>
                 ))}
               </div>
+              ) : null}
             </div>
 
             {/* Link Columns */}
@@ -151,11 +148,6 @@ export function FooterSection() {
                         className="text-sm text-white/40 hover:text-white transition-colors inline-flex items-center gap-2"
                       >
                         {link.name}
-                        {"badge" in link && link.badge && (
-                          <span className="text-xs px-2 py-0.5 bg-white text-black rounded-full">
-                            {link.badge}
-                          </span>
-                        )}
                       </a>
                     </li>
                   ))}

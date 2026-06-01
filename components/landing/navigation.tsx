@@ -9,7 +9,6 @@ const navLinks = [
   { name: "Publish", href: "/analyst" },
   { name: "Watchlist", href: "/watchlist" },
   { name: "Access", href: "/subscription" },
-  { name: "Roadmap", href: "/roadmap" },
 ];
 
 export function Navigation() {

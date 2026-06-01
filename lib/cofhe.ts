@@ -8,6 +8,7 @@ type Address = `0x${string}`;
 
 let cachedClient: any;
 let cachedChainId: number | undefined;
+let cachedAccount: string | undefined;
 
 function viemChain() {
   if (ACTIVE_CHAIN.id === 421614) return arbitrumSepolia;
@@ -25,6 +26,7 @@ export async function getCofheClient(account: string) {
   if (!window.ethereum) {
     throw new Error("Wallet extension not found.");
   }
+  const normalizedAccount = account.toLowerCase();
 
   const [{ createCofheClient, createCofheConfig }, { chains }] =
     await Promise.all([
@@ -32,13 +34,18 @@ export async function getCofheClient(account: string) {
       import("@cofhe/sdk/chains"),
     ]);
 
-  if (!cachedClient || cachedChainId !== ACTIVE_CHAIN.id) {
+  if (
+    !cachedClient ||
+    cachedChainId !== ACTIVE_CHAIN.id ||
+    cachedAccount !== normalizedAccount
+  ) {
     const config = createCofheConfig({
       supportedChains: [cofheChain(chains)],
       useWorkers: true,
     });
     cachedClient = createCofheClient(config);
     cachedChainId = ACTIVE_CHAIN.id;
+    cachedAccount = normalizedAccount;
   }
 
   const chain = viemChain();

@@ -41,12 +41,13 @@ async function main() {
   console.log("Owner:", owner.address);
   console.log("Ephemeral subscriber:", subscriber.address);
 
+  const subscriberFundEth = process.env.QA_SUBSCRIBER_FUND_ETH || "0.03";
   const fundTx = await owner.sendTransaction({
     to: subscriber.address,
-    value: ethers.parseEther("0.006"),
+    value: ethers.parseEther(subscriberFundEth),
   });
   await fundTx.wait();
-  console.log("Subscriber funded:", fundTx.hash);
+  console.log("Subscriber funded:", fundTx.hash, `${subscriberFundEth} ETH`);
 
   const ownerClient = await createClient(provider, owner);
   const subscriberClient = await createClient(provider, subscriber);
@@ -67,6 +68,12 @@ async function main() {
     "A seeded QA signal proves publish, subscription, ACL grant, and decrypt on Sepolia.",
     "FHE",
     "Privacy Infrastructure",
+    "Accumulation",
+    "DEX",
+    "Ethereum Sepolia",
+    `qa:${Date.now()}`,
+    "silent-score-v1.1",
+    "live-qa",
     1,
     whale,
     amount,
@@ -178,6 +185,49 @@ async function main() {
     throw new Error("Wrong decrypted analyst score.");
   }
   console.log("Analyst score decrypted:", decryptedScore.toString());
+
+  const profileTx = await ownerContract.setAnalystProfileFor(
+    owner.address,
+    "SilentWhale QA Desk",
+    "Live QA profile for Wave 5 analyst marketplace checks.",
+    "Privacy infrastructure, exchange flows, and bridge concentration.",
+    "ipfs://silentwhale/qa-desk",
+    true
+  );
+  await profileTx.wait();
+  console.log("Analyst profile recorded:", profileTx.hash);
+
+  const daoExpiry = BigInt(Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60);
+  const ownerGrantTx = await ownerContract.grantSubscription(owner.address, 3, daoExpiry);
+  await ownerGrantTx.wait();
+  const teamTx = await ownerContract.createTeam(ethers.id(`qa-team:${Date.now()}`), 5);
+  await teamTx.wait();
+  const teamId = (await ownerContract.teamCount()) - 1n;
+  const seatTx = await ownerContract.addTeamMember(teamId, subscriber.address);
+  await seatTx.wait();
+  const teamTier = await ownerContract.effectiveTier(subscriber.address);
+  if (teamTier < 3n) {
+    throw new Error("DAO team tier was not inherited by the member.");
+  }
+  console.log("DAO team seat granted:", seatTx.hash, "team", teamId.toString());
+
+  const alertTx = await ownerContract.recordAlert(
+    subscriber.address,
+    ethers.id(`qa-alert:${subscriber.address}`),
+    signalId,
+    "in-app",
+    `qa:${Date.now()}`
+  );
+  await alertTx.wait();
+  const alertId = (await ownerContract.alertCount(subscriber.address)) - 1n;
+  const alertReadTx = await subscriberContract.markAlertRead(alertId, true);
+  await alertReadTx.wait();
+  const alert = await ownerContract.getAlert(subscriber.address, alertId);
+  if (!alert.read) {
+    throw new Error("Alert read state was not updated.");
+  }
+  console.log("Alert receipt recorded:", alertTx.hash);
+
   console.log("LIVE_QA_OK");
 }
 
