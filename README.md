@@ -143,10 +143,10 @@ Last verified on June 1, 2026:
 - `npm run lint` passed.
 - `npm run test:contracts` passed with 9 tests.
 - `npm run security:check` passed with deployed bytecode at 24,494 bytes.
-- `npm run qa:wallet` passed against Sepolia chain `11155111`.
+- `npm run qa:wallet` passed against Sepolia chain `11155111` with 3 feeds and 0 signals.
 - `npm run indexer` indexed 0 protocol signals on the fresh empty deployment.
 - `npm run build` passed. The build still reports webpack circular chunk warnings, but deployment succeeds.
-- Vercel production route smoke checks returned `200` for `/`, `/dashboard`, `/admin`, `/alerts`, `/analyst`, `/analysts`, `/dao`, `/subscription`, `/watchlist`, and `/signals/1`.
+- Local and Vercel production route smoke checks returned `200` for `/`, `/dashboard`, `/admin`, `/alerts`, `/analyst`, `/analysts`, `/dao`, `/subscription`, and `/watchlist`; the dashboard shows the fresh empty state with no demo signal history.
 
 ## Wave 5 - Completed   Build
 
