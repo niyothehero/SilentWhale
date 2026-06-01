@@ -178,48 +178,55 @@ export default function AnalystsPage() {
       ) : analysts.length === 0 ? (
         <EmptyState title="No analysts yet." copy="Published signals will create marketplace rows automatically." />
       ) : (
-        <div className="grid gap-0 divide-y divide-white/10 border-y border-white/10 lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+        <div className="divide-y divide-white/10 border-y border-white/10">
           {analysts.map((analyst) => (
-            <article key={analyst.analyst} className="p-7">
-              <div className="mb-6 flex items-center justify-between">
-                <ShieldCheck className="h-5 w-5 text-[#67e8f9]" />
-                <span className="font-mono text-xs text-white/35">
-                  {analyst.signalCount} signals
-                </span>
-              </div>
-              <h2 className="font-display text-4xl">{analyst.displayName}</h2>
-              <p className="mt-3 min-h-16 text-sm text-white/50">{analyst.bio}</p>
-              <p className="mt-5 text-sm text-white/60">{analyst.strategy}</p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {analyst.sectors.map((sector) => (
-                  <span key={sector} className="border border-white/10 px-3 py-1 text-xs text-white/45">
-                    {sector}
+            <article
+              key={analyst.analyst}
+              className="grid gap-6 py-7 lg:grid-cols-[minmax(220px,0.8fr)_minmax(0,1.4fr)_220px]"
+            >
+              <div>
+                <div className="mb-4 flex items-center gap-3">
+                  <ShieldCheck className="h-5 w-5 text-[#67e8f9]" />
+                  <span className="font-mono text-xs text-white/35">
+                    {analyst.signalCount} signals
                   </span>
-                ))}
+                </div>
+                <h2 className="font-display text-3xl">{analyst.displayName}</h2>
+                <p className="mt-3 text-sm text-white/45">
+                  {formatAddress(analyst.analyst)}
+                </p>
               </div>
-              <div className="mt-7 space-y-3 text-sm text-white/50">
-                <p>Wallet: {formatAddress(analyst.analyst)}</p>
+              <div>
+                <p className="text-sm leading-6 text-white/55">{analyst.bio}</p>
+                <p className="mt-4 text-sm leading-6 text-white/65">{analyst.strategy}</p>
+                <div className="mt-5 flex flex-wrap gap-3 text-xs text-white/45">
+                  {analyst.sectors.map((sector) => (
+                    <span key={sector}>{sector}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col items-start gap-4 lg:items-end">
                 <Link
                   href={`${ACTIVE_CHAIN.explorer}/address/${analyst.analyst}`}
                   target="_blank"
-                  className="inline-flex border-b border-white/25 text-white/70"
+                  className="inline-flex border-b border-white/25 text-sm text-white/70"
                 >
                   Explorer
                 </Link>
+                <Button
+                  onClick={() => unlockScore(analyst.analyst)}
+                  disabled={busy === analyst.analyst || !analyst.hasScore}
+                  variant={analyst.hasScore ? "default" : "outline"}
+                  className={
+                    analyst.hasScore
+                      ? "h-10 rounded-full bg-white px-5 text-black hover:bg-white/90"
+                      : "h-10 rounded-full border-white/20 bg-transparent px-5 text-white/45"
+                  }
+                >
+                  <Star className="mr-2 h-4 w-4" />
+                  {analyst.score || (analyst.hasScore ? "Unlock reputation" : "No reputation yet")}
+                </Button>
               </div>
-              <Button
-                onClick={() => unlockScore(analyst.analyst)}
-                disabled={busy === analyst.analyst || !analyst.hasScore}
-                variant={analyst.hasScore ? "default" : "outline"}
-                className={
-                  analyst.hasScore
-                    ? "mt-8 h-11 w-full rounded-full bg-white text-black hover:bg-white/90"
-                    : "mt-8 h-11 w-full rounded-full border-white/20 bg-transparent text-white/45"
-                }
-              >
-                <Star className="mr-2 h-4 w-4" />
-                {analyst.score || (analyst.hasScore ? "Unlock reputation" : "No reputation yet")}
-              </Button>
             </article>
           ))}
         </div>

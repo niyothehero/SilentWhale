@@ -188,28 +188,31 @@ export default function SubscriptionPage() {
         </Button>
       </div>
 
-      <div className="grid gap-0 divide-y divide-white/10 border-y border-white/10 lg:grid-cols-4 lg:divide-x lg:divide-y-0">
+      <div className="divide-y divide-white/10 border-y border-white/10">
         {tierCopy.map((tier, index) => {
           const price = index === 0 ? BigInt(0) : prices[index] || BigInt(0);
           return (
-            <section key={tier.name} className="p-7 lg:min-h-[460px]">
-              <div className="mb-8 flex items-center justify-between">
-                <span className="font-mono text-xs text-white/35">
-                  {String(index).padStart(2, "0")}
-                </span>
-                {subscription?.active && subscription.tier === index ? (
-                  <Crown className="h-5 w-5 text-[#fbbf24]" />
-                ) : null}
+            <section
+              key={tier.name}
+              className="grid gap-6 py-7 lg:grid-cols-[220px_180px_minmax(0,1fr)_220px] lg:items-start"
+            >
+              <div>
+                <div className="mb-3 flex items-center gap-3">
+                  <span className="font-mono text-xs text-white/35">
+                    {String(index).padStart(2, "0")}
+                  </span>
+                  {subscription?.active && subscription.tier === index ? (
+                    <Crown className="h-4 w-4 text-[#fbbf24]" />
+                  ) : null}
+                </div>
+                <h2 className="font-display text-3xl">{tier.name}</h2>
+                <p className="mt-2 text-sm text-white/50">{tier.summary}</p>
               </div>
-              <h2 className="font-display text-4xl">{tier.name}</h2>
-              <p className="mt-3 min-h-14 text-sm text-white/50">
-                {tier.summary}
-              </p>
-              <p className="mt-8 font-display text-5xl">
+              <p className="font-display text-4xl lg:text-right">
                 {index === 0 ? "0" : price ? formatEther(price) : "..."}
                 <span className="ml-2 font-sans text-sm text-white/40">ETH</span>
               </p>
-              <ul className="mt-8 space-y-3">
+              <ul className="grid gap-2 md:grid-cols-2">
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex items-center gap-3 text-sm text-white/55">
                     <Check className="h-4 w-4 text-[#67e8f9]" />
@@ -217,7 +220,7 @@ export default function SubscriptionPage() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-10 space-y-3">
+              <div className="space-y-3">
                 <Button
                   disabled={index === 0 || busyTier === `eth-${index}`}
                   onClick={() => subscribe(index)}
